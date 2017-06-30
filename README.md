@@ -2,6 +2,8 @@
 
 WPGraphQL bindings for WordPress Fieldmanager, by Alley Interactive. 
 
+![Example of WPGraphQL Fieldmanager in action](https://github.com/wp-graphql/wp-graphql-fieldmanager/blob/master/img/fieldmanager-graphql.gif?raw=true "WPGraphQL Fieldmanager Gif example")
+
 ## Getting Started
 
 This plugin is an extension to both WPGraphQL and WordPress Fieldmanager and requires both of those plugins to be installed
