@@ -1,0 +1,25 @@
+{
+  "name": "wp-graphql/wp-graphql-fieldmanager",
+  "description": "GraphQL bindings for fieldmanager",
+  "type": "library",
+  "license": "GPLv3",
+  "authors": [
+    {
+      "name": "Jason Bahl",
+      "email": "jasonbahl@mac.com"
+    }
+  ],
+  "require-dev": {
+  },
+  "config": {
+    "optimize-autoloader": true
+  },
+  "autoload": {
+    "psr-4": {
+      "WPGraphQL\\Extensions\\Fieldmanager\\": "src/"
+    },
+    "classmap": [
+      "src/"
+    ]
+  }
+}
