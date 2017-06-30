@@ -11,7 +11,7 @@ class FieldType extends WPObjectType {
 	public function __construct( \Fieldmanager_Field $field, $fm_context ) {
 
 		$config = [
-			'name' => ! empty( $field->name ) ? Utils::_graphql_label( $field->name ) : 'fmField',
+			'name' => ! empty( $field->name ) ? Utils::_graphql_label( 'fm_' . $field->name  ) : 'fmField',
 			'fields' => self::fields( $field, $fm_context ),
 			'description' => ! empty( $field->description ) ? $field->description : __( 'Fieldmanager field', 'wp-graphql-fieldmanager' ),
 		];

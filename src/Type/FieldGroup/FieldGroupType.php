@@ -13,7 +13,7 @@ class FieldGroupType extends WPObjectType {
 	public function __construct( \Fieldmanager_Group $field_group, $fm_context ) {
 
 		$config = [
-			'name' => ! empty( $field_group->name ) ? Utils::_graphql_label( $field_group->name ) : 'fmField',
+			'name' => ! empty( $field_group->name ) ? Utils::_graphql_label(  'fm_' . $field_group->name . '_field_group' ) : 'fmFieldGroup',
 			'fields' => self::fields( $field_group, $fm_context ),
 			'description' => ! empty( $field_group->description ) ? $field_group->description : __( 'Fieldmanager group', 'wp-graphql-fieldmanager' ),
 			'fm_context' => $fm_context,
