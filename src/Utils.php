@@ -167,15 +167,35 @@ class Utils {
 
 	}
 
+	/**
+	 * Takes a Fieldmanager field (either raw or nested) and returns the field_object to be used in resolving the property values
+	 *
+	 * @param $field
+	 *
+	 * @return mixed|null
+	 */
 	private static function get_field( $field ) {
+
+		/**
+		 * If the field is an object, just pass it through
+		 */
 		if ( is_object( $field ) ) {
-			$group = $field;
-		} elseif ( is_array( $field ) && ! empty( $field['field'] ) && $field['field'] instanceof \Fieldmanager_Group ) {
-			$group = $field['field'];
+			$field_to_return = $field;
+
+		/**
+		 * If the $field is an array, it means it's formatted with our nested array, so there should be
+		 * a "field" key which has the object we're looking for
+		 */
+		} elseif ( is_array( $field ) && ! empty( $field['field'] ) && is_object( $field['field'] )  ) {
+			$field_to_return = $field['field'];
 		} else {
-			$group = null;
+			$field_to_return = null;
 		}
-		return $group;
+
+		/**
+		 * Return the field
+		 */
+		return $field_to_return;
 	}
 
 }
