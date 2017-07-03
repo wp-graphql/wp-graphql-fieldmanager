@@ -1,16 +1,26 @@
 <?php
 namespace WPGraphQL\Extensions\Fieldmanager;
 
+use WPGraphQL\Extensions\Fieldmanager\Type\Enum\AddMorePositionEnum;
 use WPGraphQL\Extensions\Fieldmanager\Type\FieldGroup\FieldGroupType;
 use WPGraphQL\Extensions\Fieldmanager\Type\FieldType\FieldType;
 
 class Types {
 
+	private static $add_more_position_enum;
 	private static $field_type;
 	private static $field_group_type;
 
 	/**
-	 * @param $type
+	 * @return AddMorePositionEnum
+	 */
+	public static function add_more_position_enum() {
+		return self::$add_more_position_enum ? : ( self::$add_more_position_enum = new AddMorePositionEnum() );
+	}
+
+	/**
+	 * @param  $field
+	 * @param  $fm_context
 	 *
 	 * @return mixed|null
 	 */

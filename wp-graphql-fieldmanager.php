@@ -131,9 +131,21 @@ if ( ! class_exists( '\WPGraphQL\Extensions\Fieldmanager' ) ) :
 		private function actions() {
 
 			/**
+			 * Fieldmanager fields are associated with specific Admin contexts to ensure the classes, etc aren't unnecessarily exposed
+			 * to the WP Admin when they shouldn't be. This sets up the contexts to allow the Fieldmanager Fields
+			 * to be exposed to the WPGraphQL Schema
+			 *
+			 * The priority must be lower than the priority for adding fields to types to ensure that the fields are registered
+			 * before attempting to add them to the types
+			 *
+			 * @see: https://github.com/alleyinteractive/wordpress-fieldmanager/compare/rest_api?expand=1#diff-e3440d8ed6d5c6c9afc90e2261f4e9a7R461
+			 */
+			add_action( 'graphql_generate_schema', [ '\WPGraphQL\Extensions\Fieldmanager\Actions', 'setup_fm_context' ], 5 );
+
+			/**
 			 * Hook into WPGraphQL when the schema is being generated and add the Fieldmanager fields to the GraphQL Schema
 			 */
-			add_action( 'graphql_generate_schema', [ '\WPGraphQL\Extensions\Fieldmanager\Actions', 'add_fields_to_types' ] );
+			add_action( 'graphql_generate_schema', [ '\WPGraphQL\Extensions\Fieldmanager\Actions', 'add_fields_to_types' ], 99 );
 
 		}
 
@@ -143,6 +155,38 @@ if ( ! class_exists( '\WPGraphQL\Extensions\Fieldmanager' ) ) :
 		private function filters() {
 			// Placeholder for future filter needs
 		}
+
+		/**
+		 * This is a static method to be used for adding Fieldmanager config to the GraphQL Schema.
+		 *
+		 * To add a Fieldmanager config to the GraphQL Schema, simply call:
+		 *
+		 * WPGraphQL\Extensions\Fieldmanager::add_fields_to_graphql( $fm_config );
+		 *
+		 * For example:
+		 *
+		 * add_action( 'fm_post_post', function() {
+		 *   $fm = new Fieldmanager_TextField([
+		 *     'name' => 'demo_field',
+		 *     'description' => 'Demo Field',
+		 *   ]);
+		 *
+		 *   $fm_config = $fm->add_meta_box( 'Single Field', ['post'] );
+		 *   \WPGraphQL\Extensions\Fieldmanager::add_fields_to_graphql( $fm_config );
+		 * }
+		 *
+		 * @param object $fieldmanager_config The Fieldmanager context object that is returned when associating Fieldmanager to WordPress.
+		 */
+		public static function add_fields( $fieldmanager_config ) {
+
+			if ( ! empty( $fieldmanager_config ) ) {
+				add_filter( 'graphql_fieldmanager_schema', function( $fields ) use ( $fieldmanager_config ) {
+					$fields[] = $fieldmanager_config;
+					return $fields;
+				} );
+			}
+		}
+
 	}
 
 endif;

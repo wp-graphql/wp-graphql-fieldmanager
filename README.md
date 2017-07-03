@@ -13,15 +13,12 @@ Download or clone the plugin from Github and put in your WordPress plugins direc
 
 ## Connect Fieldmanager Schema to WPGraphQL
 
-**NOTE:** This will likely change, but for now:
+Let's say you have this existing Fieldmanager Config to add some fields to the "post" post_type: 
 
-Let's say you have this existing Fieldmanager configuration that adds a 
-metabox to the Posts screen, which includes a Field group and various nested
-fields. 
 ```
-function get_fieldmanager_post_config() {
+add_action( 'fm_post_post', function() {
 
-	$fm = new Fieldmanager_Group( array(
+    $fm = new Fieldmanager_Group( array(
 		'name' => 'contact_information',
 		'children' => array(
 			'name' => new Fieldmanager_Textfield( 'Name' ),
@@ -45,57 +42,21 @@ function get_fieldmanager_post_config() {
 		),
 	) );
 
-	$fieldmanager_config = $fm->add_meta_box( 'Contact Information', 'post' );
-	return $fieldmanager_config;
+	$fm->add_meta_box( 'Contact Information', 'post' );
 
 }
-
-// Add the meta box to the post screen
-add_action( 'fm_post_post', function() {
-	get_fieldmanager_post_config();
-} );
-```
-To register this Schema to GraphQL, you simply need to do the following:
-
-```
-add_filter( 'graphql_fieldmanager_schema', function( $fields ) {
-	$fields[] = get_fieldmanager_post_config();
-	return $fields;
-} );
 ```
 
-Of course, you likely have additional metaboxes or field configurations, so you can easily register multiple fieldmanager
-configurations to GraphQL as well. Let's say you had this additional Fieldmanager
-configuration:
+Simply update the last line to be: 
 
 ```
-function get_fieldmanager_post_config_2() {
-
-	$fm = new Fieldmanager_TextField( array(
-		'name' => 'demo_field',
-		'description' => 'Demo Field for Posts',
-	) );
-	$fieldmanager_config = $fm->add_meta_box( 'Single Field', 'post' );
-	return $fieldmanager_config;
-
-}
-
-// Add the metabox to the post screen
-add_action( 'fm_post_post', function() {
-	get_fieldmanager_post_config_2();
-} );
+$fm_config = $fm->add_meta_box( 'Contact Information', 'post' );
+\WPGraphQL\Extensions\Fieldmanager::add_fields( $fm_config );
 ```
 
-You could simply add that config to the same filter (or another one) to connect it to WPGraphQL like so:
+And now the `post` post_type will have the defined fields in the WPGraphQL Schema. 
 
-```
-add_filter( 'graphql_fieldmanager_schema', function( $fields ) {
-	$fields[] = get_fieldmanager_post_config();
-	$fields[] = get_fieldmanager_post_config_2();
-	return $fields;
-} );
-
-```
+**NOTE:** This will add all fields in the configuration to the WPGraphQL Schema. There will likely be per-field `show_in_graphql` support at some point in the future.
 
 ## Query Fieldmanager fields
 
@@ -108,7 +69,7 @@ Now, we can run a query like so:
 
 ```
 {
-  post(id: "cG9zdDoyNDA3") {
+  post(id: "{post_global_id_goes_here}") {
     id
     postId
     contactInformation {

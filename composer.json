@@ -21,5 +21,8 @@
     "classmap": [
       "src/"
     ]
+  },
+  "require": {
+    "phpdocumentor/reflection-docblock": "^3.1"
   }
 }
